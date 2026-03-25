@@ -11,6 +11,7 @@ export interface CardConfig {
   english: string
   pattern: string
   title: string
+  photo?: string | null  // base64 data URL
 }
 
 export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvasElement> {
@@ -81,15 +82,17 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
   ctx.fillText('With warm wishes from', 540, 650)
   ctx.globalAlpha = 1
 
-  // User NAME - the hero element
-  const nameFontSize = Math.min(config.nameSize, calcNameFontSize(config.name))
-  ctx.font = `bold ${nameFontSize}px Arial`
-  ctx.fillStyle = config.accentColor
-  ctx.textAlign = 'center'
-  ctx.shadowColor = 'rgba(0,0,0,0.6)'
-  ctx.shadowBlur = 15
-  ctx.fillText(config.name || 'Your Name', 540, 760)
-  ctx.shadowBlur = 0
+  // User NAME - the hero element (only if no photo)
+  if (!config.photo) {
+    const nameFontSize = Math.min(config.nameSize, calcNameFontSize(config.name))
+    ctx.font = `bold ${nameFontSize}px Arial`
+    ctx.fillStyle = config.accentColor
+    ctx.textAlign = 'center'
+    ctx.shadowColor = 'rgba(0,0,0,0.6)'
+    ctx.shadowBlur = 15
+    ctx.fillText(config.name || 'Your Name', 540, 760)
+    ctx.shadowBlur = 0
+  }
 
   // Urdu sub-text
   if (config.urdu) {
@@ -101,6 +104,19 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.globalAlpha = 1
   }
 
+  // User photo (circular frame)
+  if (config.photo) {
+    await drawCircularPhoto(ctx, config.photo, 540, 760, 120, config.accentColor)
+    // Push name down
+    ctx.font = `bold ${Math.min(config.nameSize, calcNameFontSize(config.name))}px Arial`
+    ctx.fillStyle = config.accentColor
+    ctx.textAlign = 'center'
+    ctx.shadowColor = 'rgba(0,0,0,0.6)'
+    ctx.shadowBlur = 15
+    ctx.fillText(config.name || 'Your Name', 540, 930)
+    ctx.shadowBlur = 0
+  }
+
   // Greetify watermark
   ctx.font = '28px Arial'
   ctx.fillStyle = config.accentColor
@@ -110,6 +126,47 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
   ctx.globalAlpha = 1
 
   return canvas
+}
+
+async function drawCircularPhoto(
+  ctx: CanvasRenderingContext2D,
+  src: string,
+  cx: number,
+  cy: number,
+  radius: number,
+  borderColor: string
+) {
+  return new Promise<void>((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      ctx.save()
+      // Outer glow ring
+      ctx.strokeStyle = borderColor
+      ctx.lineWidth = 8
+      ctx.globalAlpha = 0.8
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius + 6, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.globalAlpha = 0.3
+      ctx.lineWidth = 4
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius + 14, 0, Math.PI * 2)
+      ctx.stroke()
+      ctx.globalAlpha = 1
+
+      // Clip to circle and draw photo
+      ctx.beginPath()
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+      ctx.clip()
+
+      const size = radius * 2
+      ctx.drawImage(img, cx - radius, cy - radius, size, size)
+      ctx.restore()
+      resolve()
+    }
+    img.onerror = () => resolve()
+    img.src = src
+  })
 }
 
 function calcNameFontSize(name: string): number {

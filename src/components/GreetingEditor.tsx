@@ -25,11 +25,20 @@ export default function GreetingEditor({ template }: Props) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [downloaded, setDownloaded] = useState(false)
+  const [photo, setPhoto] = useState<string | null>(null)
   const [aiMessage, setAiMessage] = useState('')
   const [isAiLoading, setIsAiLoading] = useState(false)
   const [aiCopied, setAiCopied] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setPhoto(ev.target?.result as string)
+    reader.readAsDataURL(file)
+  }
 
   const generate = useCallback(async () => {
     setIsGenerating(true)
@@ -47,13 +56,14 @@ export default function GreetingEditor({ template }: Props) {
         english: template.english,
         pattern: template.pattern,
         title: template.title,
+        photo,
       })
       canvasRef.current = canvas
       setPreviewUrl(canvas.toDataURL('image/png', 0.8))
     } finally {
       setIsGenerating(false)
     }
-  }, [name, nameSize, nameColor, template])
+  }, [name, nameSize, nameColor, template, photo])
 
   // Debounced regeneration
   useEffect(() => {
@@ -208,6 +218,37 @@ export default function GreetingEditor({ template }: Props) {
                       className="opacity-0 absolute w-1 h-1"
                     />
                   </label>
+                </div>
+              </div>
+
+              {/* Photo Upload */}
+              <div>
+                <label className="block text-white font-medium mb-2 text-sm">
+                  Your Photo <span className="text-gray-500 font-normal">(optional)</span>
+                </label>
+                <div className="flex items-center gap-3">
+                  {photo ? (
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={photo} alt="preview" className="w-12 h-12 rounded-full object-cover border-2 border-amber-500" />
+                      <button
+                        onClick={() => setPhoto(null)}
+                        className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        ✕ Remove
+                      </button>
+                    </>
+                  ) : (
+                    <label className="flex-1 flex items-center justify-center gap-2 bg-gray-800 border border-dashed border-gray-600 hover:border-amber-500 rounded-xl py-3 cursor-pointer transition-colors text-sm text-gray-400 hover:text-white">
+                      📷 Upload Photo
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
                 </div>
               </div>
 

@@ -70,15 +70,7 @@ const PHOTOS: Record<string, string> = {
   // Sikh
   'vaisakhi':              NEWYEAR,
   'guru-nanak-jayanti':    NIGHT,
-  // Election
-  'muhtar-adayi':          MOSQUE2,
-  'bagimsiz-aday':         MOSQUE2,
-  'meclis-uyesi':          MOSQUE2,
-  'cumhurbaskanligi-aday': MOSQUE2,
-  'genclik-adayi':         NIGHT,
-  'kadin-adayi':           NIGHT,
-  'hizmet-sloganı':        MOSQUE2,
-  'mahalle-dernegi':       MOSQUE2,
+  // Election templates use gradient (no photo)
 }
 
 export default function TemplateCard({ template }: Props) {

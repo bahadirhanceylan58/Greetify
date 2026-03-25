@@ -82,15 +82,7 @@ const BG_PHOTOS: Record<string, string> = {
   // Sikh
   'vaisakhi':              NEWYEAR,
   'guru-nanak-jayanti':    NIGHT,
-  // Election
-  'muhtar-adayi':          MOSQUE2,
-  'bagimsiz-aday':         MOSQUE2,
-  'meclis-uyesi':          MOSQUE2,
-  'cumhurbaskanligi-aday': MOSQUE2,
-  'genclik-adayi':         NIGHT,
-  'kadin-adayi':           NIGHT,
-  'hizmet-sloganı':        MOSQUE2,
-  'mahalle-dernegi':       MOSQUE2,
+  // Election templates intentionally omitted — they use gradient backgrounds
 }
 
 export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvasElement> {

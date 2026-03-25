@@ -7,7 +7,7 @@ export interface Template {
   titleUr?: string
   category: Category
   occasion: string
-  gradient: string       // Tailwind gradient classes
+  gradient: string       // Tailwind gradient classes (fallback)
   bgColor: string        // hex for canvas
   accentColor: string    // hex for canvas text accent
   textColor: string      // hex for main text
@@ -16,6 +16,7 @@ export interface Template {
   urdu?: string          // Urdu greeting text
   english: string        // English greeting
   pattern: 'stars' | 'cross' | 'flowers' | 'crescent' | 'flag' | 'leaves'
+  bgImage: string        // Unsplash background image URL
 }
 
 export const templates: Template[] = [
@@ -34,6 +35,7 @@ export const templates: Template[] = [
     urdu: 'عید مبارک',
     english: 'Eid Mubarak',
     pattern: 'crescent',
+    bgImage: 'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80&fit=crop',
   },
   {
     id: 'eid-ul-adha',
@@ -42,13 +44,14 @@ export const templates: Template[] = [
     occasion: 'Eid al-Adha',
     gradient: 'from-amber-600 via-yellow-500 to-orange-400',
     bgColor: '#92400e',
-    accentColor: '#ffffff',
+    accentColor: '#fbbf24',
     textColor: '#ffffff',
     emoji: '🐑',
     arabic: 'عيد الأضحى مبارك',
     urdu: 'عید الاضحیٰ مبارک',
     english: 'Eid ul-Adha Mubarak',
     pattern: 'stars',
+    bgImage: 'https://images.unsplash.com/photo-1563804447971-6e113ab80713?w=600&q=80&fit=crop',
   },
   {
     id: 'ramadan-mubarak',
@@ -64,6 +67,7 @@ export const templates: Template[] = [
     urdu: 'رمضان مبارک',
     english: 'Ramadan Mubarak',
     pattern: 'crescent',
+    bgImage: 'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=600&q=80&fit=crop',
   },
   {
     id: 'laylat-al-qadr',
@@ -79,6 +83,7 @@ export const templates: Template[] = [
     urdu: 'شبِ قدر مبارک',
     english: 'Blessed Laylat al-Qadr',
     pattern: 'stars',
+    bgImage: 'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?w=600&q=80&fit=crop',
   },
   {
     id: 'mawlid-nabi',
@@ -94,6 +99,7 @@ export const templates: Template[] = [
     urdu: 'میلاد النبی ﷺ',
     english: 'Mawlid al-Nabi Mubarak',
     pattern: 'crescent',
+    bgImage: 'https://images.unsplash.com/photo-1519817650390-64a93db51149?w=600&q=80&fit=crop',
   },
   {
     id: 'isra-miraj',
@@ -109,10 +115,11 @@ export const templates: Template[] = [
     urdu: 'معراج النبی ﷺ مبارک',
     english: "Isra' and Mi'raj Mubarak",
     pattern: 'stars',
+    bgImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=600&q=80&fit=crop',
   },
   {
     id: 'jumma-mubarak',
-    title: 'Jumu\'ah Mubarak',
+    title: "Jumu'ah Mubarak",
     category: 'islamic',
     occasion: 'Friday Blessing',
     gradient: 'from-teal-700 via-cyan-600 to-sky-500',
@@ -122,8 +129,9 @@ export const templates: Template[] = [
     emoji: '🕋',
     arabic: 'جمعة مباركة',
     urdu: 'جمعہ مبارک',
-    english: 'Jumu\'ah Mubarak',
+    english: "Jumu'ah Mubarak",
     pattern: 'crescent',
+    bgImage: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=600&q=80&fit=crop',
   },
   {
     id: 'islamic-new-year',
@@ -139,6 +147,7 @@ export const templates: Template[] = [
     urdu: 'نیا ہجری سال مبارک',
     english: 'Happy Islamic New Year',
     pattern: 'crescent',
+    bgImage: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=600&q=80&fit=crop',
   },
   {
     id: 'ashura',
@@ -154,6 +163,7 @@ export const templates: Template[] = [
     urdu: 'یوم عاشورہ',
     english: 'Day of Ashura Mubarak',
     pattern: 'stars',
+    bgImage: 'https://images.unsplash.com/photo-1545459720-aac8509eb02d?w=600&q=80&fit=crop',
   },
 
   // ─── CHRISTIAN ─────────────────────────────────────────────
@@ -169,6 +179,7 @@ export const templates: Template[] = [
     emoji: '🎄',
     english: 'Merry Christmas & Happy New Year',
     pattern: 'cross',
+    bgImage: 'https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=600&q=80&fit=crop',
   },
   {
     id: 'easter',
@@ -182,6 +193,7 @@ export const templates: Template[] = [
     emoji: '✝️',
     english: 'Happy Easter! He is Risen!',
     pattern: 'cross',
+    bgImage: 'https://images.unsplash.com/photo-1521334726092-b509a19597c5?w=600&q=80&fit=crop',
   },
   {
     id: 'good-friday',
@@ -195,6 +207,7 @@ export const templates: Template[] = [
     emoji: '✝️',
     english: 'Blessed Good Friday',
     pattern: 'cross',
+    bgImage: 'https://images.unsplash.com/photo-1519817914152-22d216bb9170?w=600&q=80&fit=crop',
   },
   {
     id: 'new-year-blessing',
@@ -208,6 +221,7 @@ export const templates: Template[] = [
     emoji: '🎊',
     english: 'May God Bless Your New Year',
     pattern: 'cross',
+    bgImage: 'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=600&q=80&fit=crop',
   },
 
   // ─── NATIONAL ──────────────────────────────────────────────
@@ -224,6 +238,7 @@ export const templates: Template[] = [
     urdu: 'یومِ آزادی مبارک',
     english: 'Happy Independence Day Pakistan',
     pattern: 'crescent',
+    bgImage: 'https://images.unsplash.com/photo-1542621334-a254cf47733d?w=600&q=80&fit=crop',
   },
   {
     id: 'india-independence',
@@ -232,11 +247,12 @@ export const templates: Template[] = [
     occasion: '15th August',
     gradient: 'from-orange-600 via-white to-green-600',
     bgColor: '#7c2d12',
-    accentColor: '#1d4ed8',
+    accentColor: '#ffffff',
     textColor: '#ffffff',
     emoji: '🇮🇳',
     english: 'Happy Independence Day India',
     pattern: 'flowers',
+    bgImage: 'https://images.unsplash.com/photo-1532375810709-75b1da00537c?w=600&q=80&fit=crop',
   },
   {
     id: 'bangladesh-victory',
@@ -250,6 +266,7 @@ export const templates: Template[] = [
     emoji: '🇧🇩',
     english: 'Happy Victory Day Bangladesh',
     pattern: 'flowers',
+    bgImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&fit=crop',
   },
 ]
 

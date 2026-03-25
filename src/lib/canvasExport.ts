@@ -13,7 +13,8 @@ export interface CardConfig {
   pattern: string
   title: string
   photo?: string | null
-  bgStyle: 'photo' | 'gradient'
+  bgStyle: 'photo' | 'custom' | 'gradient'
+  customBg?: string | null
 }
 
 // All photo IDs below are manually verified to show appropriate content
@@ -67,7 +68,9 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
   const ctx = canvas.getContext('2d')!
 
   let bgLoaded = false
-  if (config.bgStyle !== 'gradient') {
+  if (config.bgStyle === 'custom' && config.customBg) {
+    bgLoaded = await drawBgImage(ctx, config.customBg, 1080, 1080)
+  } else if (config.bgStyle === 'photo') {
     const bgUrl = BG_PHOTOS[config.id]
     if (bgUrl) {
       bgLoaded = await drawBgImage(ctx, bgUrl, 1080, 1080)

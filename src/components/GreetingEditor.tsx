@@ -22,7 +22,8 @@ export default function GreetingEditor({ template }: Props) {
   const [name, setName] = useState('')
   const [nameColor, setNameColor] = useState('#fbbf24')
   const [nameSize, setNameSize] = useState(90)
-  const [bgStyle, setBgStyle] = useState<'photo' | 'gradient'>('photo')
+  const [bgStyle, setBgStyle] = useState<'photo' | 'custom' | 'gradient'>('photo')
+  const [customBg, setCustomBg] = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [downloaded, setDownloaded] = useState(false)
@@ -60,13 +61,14 @@ export default function GreetingEditor({ template }: Props) {
         title: template.title,
         photo,
         bgStyle,
+        customBg,
       })
       canvasRef.current = canvas
       setPreviewUrl(canvas.toDataURL('image/png', 0.8))
     } finally {
       setIsGenerating(false)
     }
-  }, [name, nameSize, nameColor, bgStyle, template, photo])
+  }, [name, nameSize, nameColor, bgStyle, customBg, template, photo])
 
   // Debounced regeneration
   useEffect(() => {
@@ -179,32 +181,78 @@ export default function GreetingEditor({ template }: Props) {
             <h2 className="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wide">Customize</h2>
 
             {/* Background Style */}
-            <div className="bg-gray-900 rounded-2xl p-5 mb-4">
-              <label className="block text-white font-medium mb-3 text-sm">
+            <div className="bg-gray-900 rounded-2xl p-5 mb-4 space-y-3">
+              <label className="block text-white font-medium text-sm">
                 Arka Plan Stili
               </label>
               <div className="flex gap-2">
                 <button
                   onClick={() => setBgStyle('photo')}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     bgStyle === 'photo'
                       ? 'bg-amber-500 text-gray-900'
                       : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                   }`}
                 >
-                  📸 Fotoğraf
+                  📸 Hazır
+                </button>
+                <button
+                  onClick={() => setBgStyle('custom')}
+                  className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    bgStyle === 'custom'
+                      ? 'bg-amber-500 text-gray-900'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  🖼️ Kendin Yükle
                 </button>
                 <button
                   onClick={() => setBgStyle('gradient')}
-                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     bgStyle === 'gradient'
                       ? 'bg-amber-500 text-gray-900'
                       : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
                   }`}
                 >
-                  🎨 Gradient
+                  🎨 Renk
                 </button>
               </div>
+
+              {/* Custom bg upload */}
+              {bgStyle === 'custom' && (
+                <div>
+                  {customBg ? (
+                    <div className="flex items-center gap-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={customBg} alt="bg" className="w-14 h-14 rounded-lg object-cover border border-amber-500" />
+                      <button
+                        onClick={() => setCustomBg(null)}
+                        className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        ✕ Kaldır
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center justify-center gap-2 bg-gray-800 border border-dashed border-amber-500 hover:border-amber-400 rounded-xl py-3 cursor-pointer transition-colors text-sm text-amber-400 hover:text-amber-300">
+                      🖼️ Arka Plan Görseli Yükle
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0]
+                          if (!file) return
+                          const reader = new FileReader()
+                          reader.onload = (ev) => {
+                            setCustomBg(ev.target?.result as string)
+                          }
+                          reader.readAsDataURL(file)
+                        }}
+                        className="hidden"
+                      />
+                    </label>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Name Input */}

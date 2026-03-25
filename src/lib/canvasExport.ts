@@ -13,7 +13,7 @@ export interface CardConfig {
   pattern: string
   title: string
   photo?: string | null
-  bgImage?: string
+  bgStyle: 'photo' | 'gradient'
 }
 
 const BG_PHOTOS: Record<string, string> = {
@@ -52,14 +52,16 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
   canvas.height = 1080
   const ctx = canvas.getContext('2d')!
 
-  const bgUrl = BG_PHOTOS[config.id] ?? config.bgImage
   let bgLoaded = false
-  if (bgUrl) {
-    bgLoaded = await drawBgImage(ctx, bgUrl, 1080, 1080)
+  if (config.bgStyle !== 'gradient') {
+    const bgUrl = BG_PHOTOS[config.id]
+    if (bgUrl) {
+      bgLoaded = await drawBgImage(ctx, bgUrl, 1080, 1080)
+    }
   }
 
   if (!bgLoaded) {
-    // Fallback: gradient
+    // Gradient background
     const grd = ctx.createLinearGradient(0, 0, 1080, 1080)
     grd.addColorStop(0, config.bgColor)
     grd.addColorStop(1, darkenColor(config.bgColor, 40))
@@ -150,29 +152,24 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
 
   } else {
     // ── LAYOUT WITHOUT PHOTO ───────────────────────────
-    // Emoji at top
-    ctx.font = '180px serif'
-    ctx.textAlign = 'center'
-    ctx.fillText(config.emoji, 540, 300)
-
     // Arabic greeting
     if (config.arabic) {
-      ctx.font = 'bold 72px serif'
+      ctx.font = 'bold 80px serif'
       ctx.fillStyle = config.accentColor
       ctx.textAlign = 'center'
       ctx.shadowColor = 'rgba(0,0,0,0.5)'
-      ctx.shadowBlur = 10
-      ctx.fillText(config.arabic, 540, 420)
+      ctx.shadowBlur = 12
+      ctx.fillText(config.arabic, 540, 360)
       ctx.shadowBlur = 0
     }
 
     // English greeting
-    ctx.font = 'bold 52px Arial'
+    ctx.font = 'bold 56px Arial'
     ctx.fillStyle = config.textColor
     ctx.textAlign = 'center'
     ctx.shadowColor = 'rgba(0,0,0,0.4)'
     ctx.shadowBlur = 8
-    ctx.fillText(config.english, 540, config.arabic ? 500 : 440)
+    ctx.fillText(config.english, 540, config.arabic ? 460 : 400)
     ctx.shadowBlur = 0
 
     // Divider
@@ -180,8 +177,8 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.lineWidth = 3
     ctx.globalAlpha = 0.5
     ctx.beginPath()
-    ctx.moveTo(200, 580)
-    ctx.lineTo(880, 580)
+    ctx.moveTo(200, 540)
+    ctx.lineTo(880, 540)
     ctx.stroke()
     ctx.globalAlpha = 1
 
@@ -190,7 +187,7 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.fillStyle = config.textColor
     ctx.globalAlpha = 0.7
     ctx.textAlign = 'center'
-    ctx.fillText('With warm wishes from', 540, 650)
+    ctx.fillText('With warm wishes from', 540, 620)
     ctx.globalAlpha = 1
 
     // Name
@@ -200,7 +197,7 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.textAlign = 'center'
     ctx.shadowColor = 'rgba(0,0,0,0.6)'
     ctx.shadowBlur = 15
-    ctx.fillText(config.name || 'Your Name', 540, 760)
+    ctx.fillText(config.name || 'Your Name', 540, 730)
     ctx.shadowBlur = 0
 
     // Urdu
@@ -209,7 +206,7 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
       ctx.fillStyle = config.textColor
       ctx.globalAlpha = 0.7
       ctx.textAlign = 'center'
-      ctx.fillText(config.urdu, 540, 840)
+      ctx.fillText(config.urdu, 540, 820)
       ctx.globalAlpha = 1
     }
   }

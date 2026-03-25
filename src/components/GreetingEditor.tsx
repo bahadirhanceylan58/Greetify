@@ -22,6 +22,7 @@ export default function GreetingEditor({ template }: Props) {
   const [name, setName] = useState('')
   const [nameColor, setNameColor] = useState('#fbbf24')
   const [nameSize, setNameSize] = useState(90)
+  const [bgStyle, setBgStyle] = useState<'photo' | 'gradient'>('photo')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [downloaded, setDownloaded] = useState(false)
@@ -58,13 +59,14 @@ export default function GreetingEditor({ template }: Props) {
         pattern: template.pattern,
         title: template.title,
         photo,
+        bgStyle,
       })
       canvasRef.current = canvas
       setPreviewUrl(canvas.toDataURL('image/png', 0.8))
     } finally {
       setIsGenerating(false)
     }
-  }, [name, nameSize, nameColor, template, photo])
+  }, [name, nameSize, nameColor, bgStyle, template, photo])
 
   // Debounced regeneration
   useEffect(() => {
@@ -175,6 +177,35 @@ export default function GreetingEditor({ template }: Props) {
         <div className="lg:w-80 space-y-6">
           <div>
             <h2 className="text-gray-400 text-sm font-medium mb-3 uppercase tracking-wide">Customize</h2>
+
+            {/* Background Style */}
+            <div className="bg-gray-900 rounded-2xl p-5 mb-4">
+              <label className="block text-white font-medium mb-3 text-sm">
+                Arka Plan Stili
+              </label>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setBgStyle('photo')}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    bgStyle === 'photo'
+                      ? 'bg-amber-500 text-gray-900'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  📸 Fotoğraf
+                </button>
+                <button
+                  onClick={() => setBgStyle('gradient')}
+                  className={`flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    bgStyle === 'gradient'
+                      ? 'bg-amber-500 text-gray-900'
+                      : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                  }`}
+                >
+                  🎨 Gradient
+                </button>
+              </div>
+            </div>
 
             {/* Name Input */}
             <div className="bg-gray-900 rounded-2xl p-5 space-y-5">

@@ -68,6 +68,14 @@ export default function Home() {
             ))}
           </div>
 
+          {/* Davetiye shortcut */}
+          <div className="mb-4">
+            <Link href="/invite"
+              className="inline-flex items-center gap-2 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-400 hover:text-rose-300 rounded-full px-5 py-2 text-sm font-medium transition-all">
+              💌 Davetiye Oluştur →
+            </Link>
+          </div>
+
           {/* Search */}
           <div className="relative max-w-md mx-auto">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">🔍</span>

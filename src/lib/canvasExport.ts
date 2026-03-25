@@ -63,6 +63,25 @@ const BG_PHOTOS: Record<string, string> = {
   'pakistan-independence': MOSQUE,
   'india-independence':    NEWYEAR,
   'bangladesh-victory':    NEWYEAR,
+  // Hindu
+  'diwali':                NIGHT,
+  'holi':                  NIGHT,
+  'navratri':              NIGHT,
+  'dussehra':              NIGHT,
+  'ganesh-chaturthi':      NIGHT,
+  'janmashtami':           NIGHT,
+  // Jewish
+  'hanukkah':              NIGHT,
+  'rosh-hashanah':         NIGHT,
+  'yom-kippur':            NIGHT,
+  'passover':              NIGHT,
+  'purim':                 NEWYEAR,
+  // Buddhist
+  'vesak':                 MOON,
+  'losar':                 NIGHT,
+  // Sikh
+  'vaisakhi':              NEWYEAR,
+  'guru-nanak-jayanti':    NIGHT,
 }
 
 export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvasElement> {

@@ -16,6 +16,11 @@ const NIGHT    = `https://images.unsplash.com/photo-1475274047050-1d0c0975c63e${
 const MOON     = `https://images.unsplash.com/photo-1534447677768-be436bb09401${Q}`
 const XMAS     = `https://images.unsplash.com/photo-1512389142860-9c449e58a543${Q}`
 const NEWYEAR  = `https://images.unsplash.com/photo-1467810563316-b5476525c0f9${Q}`
+// New religion photos
+const DIWALI   = `https://images.unsplash.com/photo-1605538032404-d7d7c50a5a34${Q}` // Diwali diyas/lamps
+const HOLI     = `https://images.unsplash.com/photo-1523050854058-8df90110c9f1${Q}` // Holi colors
+const TEMPLE   = `https://images.unsplash.com/photo-1555952517-2e8e729e0b44${Q}` // Hindu temple
+const MENORAH  = `https://images.unsplash.com/photo-1576532115-b0d2af4b6b88${Q}` // Hanukkah menorah
 
 const PHOTOS: Record<string, string> = {
   'eid-ul-fitr':           MOSQUE,
@@ -45,6 +50,25 @@ const PHOTOS: Record<string, string> = {
   'pakistan-independence': MOSQUE,
   'india-independence':    NEWYEAR,
   'bangladesh-victory':    NEWYEAR,
+  // Hindu
+  'diwali':                DIWALI,
+  'holi':                  HOLI,
+  'navratri':              TEMPLE,
+  'dussehra':              TEMPLE,
+  'ganesh-chaturthi':      TEMPLE,
+  'janmashtami':           NIGHT,
+  // Jewish
+  'hanukkah':              MENORAH,
+  'rosh-hashanah':         NIGHT,
+  'yom-kippur':            NIGHT,
+  'passover':              NIGHT,
+  'purim':                 NEWYEAR,
+  // Buddhist
+  'vesak':                 NIGHT,
+  'losar':                 NIGHT,
+  // Sikh
+  'vaisakhi':              NEWYEAR,
+  'guru-nanak-jayanti':    NIGHT,
 }
 
 export default function TemplateCard({ template }: Props) {

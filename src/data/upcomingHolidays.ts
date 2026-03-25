@@ -78,6 +78,90 @@ const ISLAMIC_DATES: Record<string, Date[]> = {
   ],
 }
 
+// Hindu holidays (lunar/solar — pre-calculated Gregorian dates)
+const HINDU_DATES: Record<string, Date[]> = {
+  'diwali': [
+    new Date('2025-10-20'),
+    new Date('2026-11-08'),
+    new Date('2027-10-29'),
+    new Date('2028-10-17'),
+    new Date('2029-11-05'),
+  ],
+  'holi': [
+    new Date('2025-03-14'),
+    new Date('2026-03-03'),
+    new Date('2027-03-22'),
+    new Date('2028-03-11'),
+    new Date('2029-03-01'),
+  ],
+  'navratri': [
+    new Date('2025-09-29'),
+    new Date('2026-10-19'),
+    new Date('2027-10-08'),
+    new Date('2028-09-26'),
+  ],
+  'janmashtami': [
+    new Date('2025-08-16'),
+    new Date('2026-09-05'),
+    new Date('2027-08-25'),
+    new Date('2028-08-14'),
+  ],
+  'ganesh-chaturthi': [
+    new Date('2025-08-27'),
+    new Date('2026-09-14'),
+    new Date('2027-09-04'),
+    new Date('2028-08-24'),
+  ],
+}
+
+// Jewish holidays (pre-calculated Gregorian dates)
+const JEWISH_DATES: Record<string, Date[]> = {
+  'hanukkah': [
+    new Date('2025-12-14'),
+    new Date('2026-12-04'),
+    new Date('2027-11-23'),
+    new Date('2028-12-12'),
+  ],
+  'rosh-hashanah': [
+    new Date('2025-09-22'),
+    new Date('2026-09-11'),
+    new Date('2027-10-01'),
+    new Date('2028-09-20'),
+  ],
+  'passover': [
+    new Date('2025-04-12'),
+    new Date('2026-04-01'),
+    new Date('2027-04-21'),
+    new Date('2028-04-09'),
+  ],
+}
+
+// Buddhist / Sikh holidays
+const BUDDHIST_DATES: Record<string, Date[]> = {
+  'vesak': [
+    new Date('2025-05-12'),
+    new Date('2026-05-31'),
+    new Date('2027-05-20'),
+    new Date('2028-05-09'),
+  ],
+}
+
+const SIKH_DATES: Record<string, Date[]> = {
+  'guru-nanak-jayanti': [
+    new Date('2025-11-05'),
+    new Date('2026-10-26'),
+    new Date('2027-11-14'),
+    new Date('2028-11-03'),
+  ],
+}
+
+function nextLunarDate(id: string, map: Record<string, Date[]>): Date | null {
+  const dates = map[id]
+  if (!dates) return null
+  const now = new Date()
+  return dates.find(d => d > now) ?? null
+}
+
 // Easter (western) calculation
 function easterDate(year: number): Date {
   const a = year % 19
@@ -133,6 +217,21 @@ function buildList(): UpcomingHoliday[] {
     { id: 'pakistan-independence', title: 'Pakistan Independence',  emoji: '🇵🇰', date: nextFixed(8, 14) },
     { id: 'india-independence',    title: 'India Independence',     emoji: '🇮🇳', date: nextFixed(8, 15) },
     { id: 'bangladesh-victory',    title: 'Bangladesh Victory Day', emoji: '🇧🇩', date: nextFixed(12, 16) },
+    // Hindu
+    { id: 'diwali',              title: 'Diwali — Festival of Lights',  emoji: '🪔', date: nextLunarDate('diwali', HINDU_DATES)! },
+    { id: 'holi',                title: 'Holi — Festival of Colors',    emoji: '🌈', date: nextLunarDate('holi', HINDU_DATES)! },
+    { id: 'navratri',            title: 'Navratri',                     emoji: '🪷', date: nextLunarDate('navratri', HINDU_DATES)! },
+    { id: 'janmashtami',         title: 'Janmashtami',                  emoji: '🦚', date: nextLunarDate('janmashtami', HINDU_DATES)! },
+    { id: 'ganesh-chaturthi',    title: 'Ganesh Chaturthi',             emoji: '🐘', date: nextLunarDate('ganesh-chaturthi', HINDU_DATES)! },
+    // Jewish
+    { id: 'hanukkah',            title: 'Hanukkah',                     emoji: '🕎', date: nextLunarDate('hanukkah', JEWISH_DATES)! },
+    { id: 'rosh-hashanah',       title: 'Rosh Hashanah',                emoji: '🍎', date: nextLunarDate('rosh-hashanah', JEWISH_DATES)! },
+    { id: 'passover',            title: 'Passover — Pesach',            emoji: '🫓', date: nextLunarDate('passover', JEWISH_DATES)! },
+    // Buddhist
+    { id: 'vesak',               title: 'Vesak — Buddha Purnima',       emoji: '🪷', date: nextLunarDate('vesak', BUDDHIST_DATES)! },
+    // Sikh
+    { id: 'vaisakhi',            title: 'Vaisakhi',                     emoji: '🌾', date: nextFixed(4, 14) },
+    { id: 'guru-nanak-jayanti',  title: 'Guru Nanak Jayanti',           emoji: '🙏', date: nextLunarDate('guru-nanak-jayanti', SIKH_DATES)! },
   ]
   return list.filter(h => h.date != null)
 }

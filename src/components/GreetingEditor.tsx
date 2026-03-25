@@ -24,6 +24,10 @@ export default function GreetingEditor({ template }: Props) {
   const [nameSize, setNameSize] = useState(90)
   const [bgStyle, setBgStyle] = useState<'photo' | 'custom' | 'gradient'>('photo')
   const [customBg, setCustomBg] = useState<string | null>(null)
+  const [customMessage, setCustomMessage] = useState('')
+  const [fontFamily, setFontFamily] = useState('Arial')
+  const [overlayOpacity, setOverlayOpacity] = useState(60)
+  const [cardSize, setCardSize] = useState<'1:1' | '9:16'>('1:1')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [downloaded, setDownloaded] = useState(false)
@@ -62,13 +66,17 @@ export default function GreetingEditor({ template }: Props) {
         photo,
         bgStyle,
         customBg,
+        customMessage,
+        fontFamily,
+        overlayOpacity,
+        cardSize,
       })
       canvasRef.current = canvas
       setPreviewUrl(canvas.toDataURL('image/png', 0.8))
     } finally {
       setIsGenerating(false)
     }
-  }, [name, nameSize, nameColor, bgStyle, customBg, template, photo])
+  }, [name, nameSize, nameColor, bgStyle, customBg, customMessage, fontFamily, overlayOpacity, cardSize, template, photo])
 
   // Debounced regeneration
   useEffect(() => {
@@ -218,6 +226,20 @@ export default function GreetingEditor({ template }: Props) {
                 </button>
               </div>
 
+              {/* Overlay opacity — only for photo/custom */}
+              {bgStyle !== 'gradient' && (
+                <div>
+                  <label className="block text-white font-medium mb-1 text-sm">
+                    Karartma: <span className="text-amber-400">{overlayOpacity}%</span>
+                  </label>
+                  <input
+                    type="range" min={10} max={90} value={overlayOpacity}
+                    onChange={(e) => setOverlayOpacity(Number(e.target.value))}
+                    className="w-full accent-amber-500"
+                  />
+                </div>
+              )}
+
               {/* Custom bg upload */}
               {bgStyle === 'custom' && (
                 <div>
@@ -335,16 +357,70 @@ export default function GreetingEditor({ template }: Props) {
               {/* Text Size */}
               <div>
                 <label className="block text-white font-medium mb-2 text-sm">
-                  Name Size: <span className="text-amber-400">{nameSize}px</span>
+                  İsim Boyutu: <span className="text-amber-400">{nameSize}px</span>
                 </label>
                 <input
-                  type="range"
-                  min={40}
-                  max={130}
-                  value={nameSize}
+                  type="range" min={40} max={130} value={nameSize}
                   onChange={(e) => setNameSize(Number(e.target.value))}
                   className="w-full accent-amber-500"
                 />
+              </div>
+
+              {/* Font selector */}
+              <div>
+                <label className="block text-white font-medium mb-2 text-sm">Yazı Tipi</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {['Arial', 'Georgia', 'Trebuchet MS', 'Impact'].map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setFontFamily(f)}
+                      style={{ fontFamily: f }}
+                      className={`py-2 rounded-xl text-sm transition-all border ${
+                        fontFamily === f
+                          ? 'border-amber-500 bg-amber-500/10 text-amber-400'
+                          : 'border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-500'
+                      }`}
+                    >
+                      {f === 'Trebuchet MS' ? 'Trebuchet' : f}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Card size */}
+              <div>
+                <label className="block text-white font-medium mb-2 text-sm">Kart Boyutu</label>
+                <div className="flex gap-2">
+                  {(['1:1', '9:16'] as const).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setCardSize(s)}
+                      className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${
+                        cardSize === s
+                          ? 'bg-amber-500 text-gray-900'
+                          : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
+                      }`}
+                    >
+                      {s === '1:1' ? '■ 1:1 Instagram' : '▬ 9:16 Story'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Custom message */}
+              <div>
+                <label className="block text-white font-medium mb-2 text-sm">
+                  Karta Mesaj <span className="text-gray-500 font-normal">(isteğe bağlı)</span>
+                </label>
+                <textarea
+                  placeholder="Tebrik mesajınızı yazın..."
+                  value={customMessage}
+                  onChange={(e) => setCustomMessage(e.target.value)}
+                  maxLength={120}
+                  rows={3}
+                  className="w-full bg-gray-800 border border-gray-700 focus:border-amber-500 rounded-xl px-4 py-3 text-white placeholder-gray-500 outline-none transition-colors text-sm resize-none"
+                />
+                <p className="text-gray-600 text-xs mt-1">{customMessage.length}/120</p>
               </div>
             </div>
           </div>
@@ -374,7 +450,7 @@ export default function GreetingEditor({ template }: Props) {
                 </div>
               )}
               <div className="pt-2 border-t border-gray-800 text-xs text-gray-600">
-                Size: 1080×1080px (Instagram/WhatsApp ready)
+                {cardSize === '9:16' ? '1080×1920px (Story/Reels)' : '1080×1080px (Instagram/WhatsApp)'}
               </div>
             </div>
           </div>

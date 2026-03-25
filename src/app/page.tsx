@@ -1,13 +1,16 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { templates, Category } from '@/data/templates'
 import TemplateCard from '@/components/TemplateCard'
 import CategoryFilter from '@/components/CategoryFilter'
+import { getUpcoming, daysUntil } from '@/data/upcomingHolidays'
 
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState<Category>('all')
   const [search, setSearch] = useState('')
+  const upcoming = useMemo(() => getUpcoming(90), [])
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: templates.length }
@@ -89,6 +92,29 @@ export default function Home() {
             counts={counts}
           />
         </div>
+
+        {/* Upcoming Holidays */}
+        {upcoming.length > 0 && (
+          <div className="mb-5">
+            <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">⏰ Yaklaşan Bayramlar</p>
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {upcoming.map((h) => {
+                const d = daysUntil(h.date)
+                return (
+                  <Link key={h.id} href={`/create/${h.id}`}
+                    className="flex-shrink-0 flex items-center gap-2 bg-gray-900 border border-gray-800 hover:border-amber-500/50 rounded-xl px-3 py-2 transition-colors"
+                  >
+                    <span className="text-lg">{h.emoji}</span>
+                    <div>
+                      <p className="text-white text-xs font-medium whitespace-nowrap">{h.title}</p>
+                      <p className="text-amber-400 text-xs">{d === 0 ? 'Bugün!' : d === 1 ? 'Yarın!' : `${d} gün`}</p>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Results count */}
         <p className="text-gray-500 text-xs mb-3">

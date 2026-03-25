@@ -2,127 +2,119 @@
 
 import Link from 'next/link'
 import { Template } from '@/data/templates'
+import { useState } from 'react'
 
 interface Props {
   template: Template
 }
 
+// Curated reliable Unsplash photos per template id
+const PHOTOS: Record<string, string> = {
+  // Islamic
+  'eid-ul-fitr':        'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?auto=format&fit=crop&w=600&q=80',
+  'eid-ul-adha':        'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80',
+  'ramadan-mubarak':    'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?auto=format&fit=crop&w=600&q=80',
+  'laylat-al-qadr':     'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=600&q=80',
+  'mawlid-nabi':        'https://images.unsplash.com/photo-1519817914152-22d216bb9170?auto=format&fit=crop&w=600&q=80',
+  'isra-miraj':         'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
+  'jumma-mubarak':      'https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?auto=format&fit=crop&w=600&q=80',
+  'islamic-new-year':   'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=600&q=80',
+  'ashura':             'https://images.unsplash.com/photo-1545459720-aac8509eb02d?auto=format&fit=crop&w=600&q=80',
+  // Christian
+  'christmas':          'https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=600&q=80',
+  'easter':             'https://images.unsplash.com/photo-1521334726092-b509a19597c5?auto=format&fit=crop&w=600&q=80',
+  'good-friday':        'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80',
+  'new-year-blessing':  'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?auto=format&fit=crop&w=600&q=80',
+  // Turkish Milli
+  'cumhuriyet-bayrami': 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=600&q=80',
+  'cocuk-bayrami':      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=600&q=80',
+  'zafer-bayrami':      'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=600&q=80',
+  'genclik-bayrami':    'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=600&q=80',
+  // Turkish Dini
+  'ramazan-bayrami':    'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?auto=format&fit=crop&w=600&q=80',
+  'kurban-bayrami':     'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80',
+  'mevlid-kandili':     'https://images.unsplash.com/photo-1519817914152-22d216bb9170?auto=format&fit=crop&w=600&q=80',
+  'regaip-kandili':     'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?auto=format&fit=crop&w=600&q=80',
+  'mirac-kandili':      'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
+  'berat-kandili':      'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=600&q=80',
+  'kadir-gecesi':       'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=600&q=80',
+  // National
+  'pakistan-independence': 'https://images.unsplash.com/photo-1542621334-a254cf47733d?auto=format&fit=crop&w=600&q=80',
+  'india-independence':    'https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80',
+  'bangladesh-victory':    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=600&q=80',
+}
+
 export default function TemplateCard({ template }: Props) {
+  const [loaded, setLoaded] = useState(false)
+  const [error, setError] = useState(false)
+  const photoUrl = PHOTOS[template.id]
+
   return (
     <Link href={`/create/${template.id}`}>
       <div className="group cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105 hover:-translate-y-1"
-           style={{ boxShadow: `0 4px 24px ${template.accentColor}25` }}>
+           style={{ boxShadow: `0 8px 32px rgba(0,0,0,0.4)` }}>
 
         {/* Card Visual */}
-        <div className="relative h-52 overflow-hidden"
-             style={{ background: getCardBg(template) }}>
+        <div className="relative h-52 overflow-hidden">
 
-          {/* Decorative circles */}
-          <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-20"
-               style={{ background: template.accentColor }} />
-          <div className="absolute -bottom-10 -left-6 w-36 h-36 rounded-full opacity-10"
-               style={{ background: template.accentColor }} />
-          <div className="absolute top-1/2 right-4 w-16 h-16 rounded-full opacity-10"
-               style={{ background: template.accentColor }} />
+          {/* Gradient fallback (always rendered behind) */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${template.gradient}`} />
 
-          {/* Pattern SVG */}
-          <PatternSVG pattern={template.pattern} color={template.accentColor} />
+          {/* Real photo */}
+          {photoUrl && !error && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={photoUrl}
+              alt={template.title}
+              onLoad={() => setLoaded(true)}
+              onError={() => setError(true)}
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
+                loaded ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+          )}
+
+          {/* Dark gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/20" />
+
+          {/* Top accent line */}
+          <div className="absolute top-0 left-0 right-0 h-1"
+               style={{ background: template.accentColor }} />
 
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-3 z-10">
-            <div className="text-5xl mb-2 drop-shadow-2xl" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.5))' }}>
-              {template.emoji}
-            </div>
+          <div className="absolute inset-0 flex flex-col justify-end p-3 z-10">
             {template.arabic && (
-              <p className="arabic-text text-lg font-bold text-center mb-1"
-                 style={{ color: template.accentColor, textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}>
+              <p className="arabic-text text-lg font-bold mb-0.5"
+                 style={{ color: template.accentColor, textShadow: '0 2px 8px rgba(0,0,0,0.9)' }}>
                 {template.arabic}
               </p>
             )}
-            <p className="text-xs font-bold text-center px-2 leading-tight"
-               style={{ color: '#fff', textShadow: '0 1px 4px rgba(0,0,0,0.8)' }}>
+            <p className="text-white font-bold text-sm leading-tight"
+               style={{ textShadow: '0 2px 6px rgba(0,0,0,0.9)' }}>
               {template.english}
             </p>
           </div>
 
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-300 z-20 flex items-center justify-center">
-            <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white text-gray-900 font-bold px-4 py-2 rounded-full text-sm shadow-xl">
-              + Add Your Name
+          {/* Hover CTA */}
+          <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+            <span className="bg-white text-gray-900 font-bold px-5 py-2 rounded-full text-sm shadow-2xl">
+              + İsim Ekle
             </span>
           </div>
-
-          {/* Shimmer line */}
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 opacity-40"
-               style={{ background: `linear-gradient(to right, transparent, ${template.accentColor}, transparent)` }} />
         </div>
 
         {/* Card Info */}
-        <div className="px-3 py-2.5 border-t"
-             style={{ background: '#111827', borderColor: `${template.accentColor}20` }}>
-          <h3 className="font-semibold text-white text-sm truncate">{template.title}</h3>
-          <p className="text-xs mt-0.5" style={{ color: template.accentColor + 'aa' }}>{template.occasion}</p>
+        <div className="px-3 py-2.5 bg-gray-900 border-t"
+             style={{ borderColor: `${template.accentColor}30` }}>
+          <div className="flex items-center gap-1.5">
+            <span className="text-base">{template.emoji}</span>
+            <h3 className="font-semibold text-white text-sm truncate">{template.title}</h3>
+          </div>
+          <p className="text-xs mt-0.5 ml-6" style={{ color: template.accentColor + '99' }}>
+            {template.occasion}
+          </p>
         </div>
       </div>
     </Link>
   )
-}
-
-function getCardBg(template: Template): string {
-  const c = template.bgColor
-  const a = template.accentColor
-  const dark = darken(c, 30)
-  return `radial-gradient(ellipse at top right, ${a}22 0%, transparent 60%), linear-gradient(135deg, ${c} 0%, ${dark} 100%)`
-}
-
-function darken(hex: string, amount: number): string {
-  const num = parseInt(hex.replace('#', ''), 16)
-  const r = Math.max(0, (num >> 16) - amount)
-  const g = Math.max(0, ((num >> 8) & 0xff) - amount)
-  const b = Math.max(0, (num & 0xff) - amount)
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
-}
-
-function PatternSVG({ pattern, color }: { pattern: Template['pattern']; color: string }) {
-  const opacity = '0.08'
-  if (pattern === 'crescent' || pattern === 'stars') {
-    return (
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-        {pattern === 'crescent' && (
-          <>
-            <text x="150" y="60" fontSize="50" fill={color} opacity={opacity} textAnchor="middle">☽</text>
-            <text x="30" y="170" fontSize="30" fill={color} opacity={opacity} textAnchor="middle">☽</text>
-          </>
-        )}
-        <text x="20" y="30" fontSize="18" fill={color} opacity={opacity}>★</text>
-        <text x="170" y="50" fontSize="12" fill={color} opacity={opacity}>★</text>
-        <text x="10" y="120" fontSize="14" fill={color} opacity={opacity}>★</text>
-        <text x="160" y="150" fontSize="20" fill={color} opacity={opacity}>★</text>
-        <text x="80" y="20" fontSize="10" fill={color} opacity={opacity}>✦</text>
-        <text x="140" y="180" fontSize="14" fill={color} opacity={opacity}>✦</text>
-        <text x="50" y="185" fontSize="10" fill={color} opacity={opacity}>★</text>
-      </svg>
-    )
-  }
-  if (pattern === 'cross') {
-    return (
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-        <text x="160" y="55" fontSize="40" fill={color} opacity={opacity} textAnchor="middle">✝</text>
-        <text x="35" y="170" fontSize="25" fill={color} opacity={opacity} textAnchor="middle">✝</text>
-        <text x="20" y="40" fontSize="14" fill={color} opacity={opacity}>✦</text>
-        <text x="170" y="170" fontSize="14" fill={color} opacity={opacity}>✦</text>
-      </svg>
-    )
-  }
-  if (pattern === 'flowers') {
-    return (
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
-        <text x="160" y="55" fontSize="40" fill={color} opacity={opacity} textAnchor="middle">❀</text>
-        <text x="35" y="170" fontSize="30" fill={color} opacity={opacity} textAnchor="middle">✿</text>
-        <text x="20" y="35" fontSize="16" fill={color} opacity={opacity}>✿</text>
-        <text x="165" y="170" fontSize="18" fill={color} opacity={opacity}>❀</text>
-      </svg>
-    )
-  }
-  return null
 }

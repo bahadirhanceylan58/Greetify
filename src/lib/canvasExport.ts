@@ -1,4 +1,5 @@
 export interface CardConfig {
+  id: string
   name: string
   nameSize: number
   nameColor: string
@@ -12,6 +13,37 @@ export interface CardConfig {
   pattern: string
   title: string
   photo?: string | null
+  bgImage?: string
+}
+
+const BG_PHOTOS: Record<string, string> = {
+  'eid-ul-fitr':        'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?auto=format&fit=crop&w=1080&q=90',
+  'eid-ul-adha':        'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=1080&q=90',
+  'ramadan-mubarak':    'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?auto=format&fit=crop&w=1080&q=90',
+  'laylat-al-qadr':     'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=1080&q=90',
+  'mawlid-nabi':        'https://images.unsplash.com/photo-1519817914152-22d216bb9170?auto=format&fit=crop&w=1080&q=90',
+  'isra-miraj':         'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1080&q=90',
+  'jumma-mubarak':      'https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?auto=format&fit=crop&w=1080&q=90',
+  'islamic-new-year':   'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1080&q=90',
+  'ashura':             'https://images.unsplash.com/photo-1545459720-aac8509eb02d?auto=format&fit=crop&w=1080&q=90',
+  'christmas':          'https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=1080&q=90',
+  'easter':             'https://images.unsplash.com/photo-1521334726092-b509a19597c5?auto=format&fit=crop&w=1080&q=90',
+  'good-friday':        'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1080&q=90',
+  'new-year-blessing':  'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?auto=format&fit=crop&w=1080&q=90',
+  'cumhuriyet-bayrami': 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=1080&q=90',
+  'cocuk-bayrami':      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1080&q=90',
+  'zafer-bayrami':      'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=1080&q=90',
+  'genclik-bayrami':    'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1080&q=90',
+  'ramazan-bayrami':    'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?auto=format&fit=crop&w=1080&q=90',
+  'kurban-bayrami':     'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=1080&q=90',
+  'mevlid-kandili':     'https://images.unsplash.com/photo-1519817914152-22d216bb9170?auto=format&fit=crop&w=1080&q=90',
+  'regaip-kandili':     'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?auto=format&fit=crop&w=1080&q=90',
+  'mirac-kandili':      'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1080&q=90',
+  'berat-kandili':      'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=1080&q=90',
+  'kadir-gecesi':       'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=1080&q=90',
+  'pakistan-independence': 'https://images.unsplash.com/photo-1542621334-a254cf47733d?auto=format&fit=crop&w=1080&q=90',
+  'india-independence':    'https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=1080&q=90',
+  'bangladesh-victory':    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1080&q=90',
 }
 
 export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvasElement> {
@@ -20,15 +52,29 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
   canvas.height = 1080
   const ctx = canvas.getContext('2d')!
 
-  // Background gradient
-  const grd = ctx.createLinearGradient(0, 0, 1080, 1080)
-  grd.addColorStop(0, config.bgColor)
-  grd.addColorStop(1, darkenColor(config.bgColor, 40))
-  ctx.fillStyle = grd
-  ctx.fillRect(0, 0, 1080, 1080)
+  const bgUrl = BG_PHOTOS[config.id] ?? config.bgImage
+  let bgLoaded = false
+  if (bgUrl) {
+    bgLoaded = await drawBgImage(ctx, bgUrl, 1080, 1080)
+  }
 
-  // Decorative pattern
-  drawPattern(ctx, config.pattern, config.accentColor)
+  if (!bgLoaded) {
+    // Fallback: gradient
+    const grd = ctx.createLinearGradient(0, 0, 1080, 1080)
+    grd.addColorStop(0, config.bgColor)
+    grd.addColorStop(1, darkenColor(config.bgColor, 40))
+    ctx.fillStyle = grd
+    ctx.fillRect(0, 0, 1080, 1080)
+    drawPattern(ctx, config.pattern, config.accentColor)
+  } else {
+    // Dark overlay on top of photo
+    const overlay = ctx.createLinearGradient(0, 0, 0, 1080)
+    overlay.addColorStop(0, 'rgba(0,0,0,0.55)')
+    overlay.addColorStop(0.5, 'rgba(0,0,0,0.35)')
+    overlay.addColorStop(1, 'rgba(0,0,0,0.75)')
+    ctx.fillStyle = overlay
+    ctx.fillRect(0, 0, 1080, 1080)
+  }
 
   // Border frame
   ctx.strokeStyle = config.accentColor
@@ -177,6 +223,24 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
   ctx.globalAlpha = 1
 
   return canvas
+}
+
+async function drawBgImage(
+  ctx: CanvasRenderingContext2D,
+  src: string,
+  w: number,
+  h: number
+): Promise<boolean> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, w, h)
+      resolve(true)
+    }
+    img.onerror = () => resolve(false)
+    img.src = src
+  })
 }
 
 async function drawCircularPhoto(

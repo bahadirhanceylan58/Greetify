@@ -44,6 +44,7 @@ export default function GreetingEditor({ template }: Props) {
     setIsGenerating(true)
     try {
       const canvas = await generateCardCanvas({
+        id: template.id,
         name: name || 'Your Name',
         nameSize,
         nameColor,

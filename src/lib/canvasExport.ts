@@ -118,12 +118,11 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     }
 
     // English greeting
-    ctx.font = 'bold 50px Arial'
     ctx.fillStyle = config.textColor
     ctx.textAlign = 'center'
     ctx.shadowColor = 'rgba(0,0,0,0.4)'
     ctx.shadowBlur = 8
-    ctx.fillText(config.english, 540, config.arabic ? 560 : 500)
+    fillTextFit(ctx, config.english, 540, config.arabic ? 560 : 500, 900, 'bold 50px Arial')
     ctx.shadowBlur = 0
 
     // Divider
@@ -168,22 +167,20 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     // ── LAYOUT WITHOUT PHOTO ───────────────────────────
     // Arabic greeting
     if (config.arabic) {
-      ctx.font = 'bold 80px serif'
       ctx.fillStyle = config.accentColor
       ctx.textAlign = 'center'
       ctx.shadowColor = 'rgba(0,0,0,0.5)'
       ctx.shadowBlur = 12
-      ctx.fillText(config.arabic, 540, 360)
+      fillTextFit(ctx, config.arabic, 540, 360, 920, 'bold 80px serif')
       ctx.shadowBlur = 0
     }
 
     // English greeting
-    ctx.font = 'bold 56px Arial'
     ctx.fillStyle = config.textColor
     ctx.textAlign = 'center'
     ctx.shadowColor = 'rgba(0,0,0,0.4)'
     ctx.shadowBlur = 8
-    ctx.fillText(config.english, 540, config.arabic ? 460 : 400)
+    fillTextFit(ctx, config.english, 540, config.arabic ? 460 : 400, 920, 'bold 56px Arial')
     ctx.shadowBlur = 0
 
     // Divider
@@ -299,6 +296,34 @@ function calcNameFontSize(name: string): number {
   if (name.length <= 20) return 85
   if (name.length <= 30) return 65
   return 50
+}
+
+// Draws text, auto-shrinking font until it fits within maxWidth
+function fillTextFit(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  fontStyle: string // e.g. 'bold 56px Arial'
+) {
+  ctx.font = fontStyle
+  const parts = fontStyle.split(' ')
+  const familyIdx = parts.findIndex(p => !/^\d/.test(p) && p !== 'bold' && p !== 'italic')
+  const family = parts.slice(familyIdx).join(' ')
+  const isBold = fontStyle.includes('bold')
+
+  // Extract initial size
+  const sizeMatch = fontStyle.match(/(\d+)px/)
+  if (!sizeMatch) { ctx.fillText(text, x, y, maxWidth); return }
+  let size = parseInt(sizeMatch[1])
+
+  while (size > 20) {
+    ctx.font = `${isBold ? 'bold ' : ''}${size}px ${family}`
+    if (ctx.measureText(text).width <= maxWidth) break
+    size -= 2
+  }
+  ctx.fillText(text, x, y)
 }
 
 function drawPattern(ctx: CanvasRenderingContext2D, pattern: string, color: string) {

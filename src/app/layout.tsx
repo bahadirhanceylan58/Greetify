@@ -43,18 +43,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon.svg" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body>
-        {children}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            if ('serviceWorker' in navigator) {
-              window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-              })
-            }
-          `
-        }} />
-      </body>
+      <body>{children}</body>
     </html>
   )
 }

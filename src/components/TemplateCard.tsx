@@ -8,40 +8,43 @@ interface Props {
   template: Template
 }
 
-// Curated reliable Unsplash photos per template id
+const Q = '?auto=format&fit=crop&w=600&q=80'
+const MOSQUE   = `https://images.unsplash.com/photo-1584551246679-0daf3d275d0f${Q}`
+const MOSQUE2  = `https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b${Q}`
+const QURAN    = `https://images.unsplash.com/photo-1542816417-0983c9c9ad53${Q}`
+const NIGHT    = `https://images.unsplash.com/photo-1475274047050-1d0c0975c63e${Q}`
+const MOON     = `https://images.unsplash.com/photo-1534447677768-be436bb09401${Q}`
+const XMAS     = `https://images.unsplash.com/photo-1512389142860-9c449e58a543${Q}`
+const NEWYEAR  = `https://images.unsplash.com/photo-1467810563316-b5476525c0f9${Q}`
+
 const PHOTOS: Record<string, string> = {
-  // Islamic
-  'eid-ul-fitr':        'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?auto=format&fit=crop&w=600&q=80',
-  'eid-ul-adha':        'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80',
-  'ramadan-mubarak':    'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?auto=format&fit=crop&w=600&q=80',
-  'laylat-al-qadr':     'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=600&q=80',
-  'mawlid-nabi':        'https://images.unsplash.com/photo-1519817914152-22d216bb9170?auto=format&fit=crop&w=600&q=80',
-  'isra-miraj':         'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
-  'jumma-mubarak':      'https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?auto=format&fit=crop&w=600&q=80',
-  'islamic-new-year':   'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=600&q=80',
-  'ashura':             'https://images.unsplash.com/photo-1545459720-aac8509eb02d?auto=format&fit=crop&w=600&q=80',
-  // Christian
-  'christmas':          'https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=600&q=80',
-  'easter':             'https://images.unsplash.com/photo-1521334726092-b509a19597c5?auto=format&fit=crop&w=600&q=80',
-  'good-friday':        'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=600&q=80',
-  'new-year-blessing':  'https://images.unsplash.com/photo-1467810563316-b5476525c0f9?auto=format&fit=crop&w=600&q=80',
-  // Turkish Milli
-  'cumhuriyet-bayrami': 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=600&q=80',
-  'cocuk-bayrami':      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=600&q=80',
-  'zafer-bayrami':      'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=600&q=80',
-  'genclik-bayrami':    'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=600&q=80',
-  // Turkish Dini
-  'ramazan-bayrami':    'https://images.unsplash.com/photo-1564769662533-4f00a87b4056?auto=format&fit=crop&w=600&q=80',
-  'kurban-bayrami':     'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?auto=format&fit=crop&w=600&q=80',
-  'mevlid-kandili':     'https://images.unsplash.com/photo-1519817914152-22d216bb9170?auto=format&fit=crop&w=600&q=80',
-  'regaip-kandili':     'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?auto=format&fit=crop&w=600&q=80',
-  'mirac-kandili':      'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=600&q=80',
-  'berat-kandili':      'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=600&q=80',
-  'kadir-gecesi':       'https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?auto=format&fit=crop&w=600&q=80',
-  // National
-  'pakistan-independence': 'https://images.unsplash.com/photo-1542621334-a254cf47733d?auto=format&fit=crop&w=600&q=80',
-  'india-independence':    'https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80',
-  'bangladesh-victory':    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=600&q=80',
+  'eid-ul-fitr':           MOSQUE,
+  'eid-ul-adha':           MOSQUE,
+  'ramadan-mubarak':       QURAN,
+  'laylat-al-qadr':        NIGHT,
+  'mawlid-nabi':           MOSQUE2,
+  'isra-miraj':            NIGHT,
+  'jumma-mubarak':         MOSQUE,
+  'islamic-new-year':      MOON,
+  'ashura':                NIGHT,
+  'christmas':             XMAS,
+  'easter':                XMAS,
+  'good-friday':           XMAS,
+  'new-year-blessing':     NEWYEAR,
+  'cumhuriyet-bayrami':    MOSQUE2,
+  'cocuk-bayrami':         NEWYEAR,
+  'zafer-bayrami':         MOSQUE2,
+  'genclik-bayrami':       NIGHT,
+  'ramazan-bayrami':       MOSQUE,
+  'kurban-bayrami':        MOSQUE,
+  'mevlid-kandili':        MOSQUE2,
+  'regaip-kandili':        QURAN,
+  'mirac-kandili':         NIGHT,
+  'berat-kandili':         NIGHT,
+  'kadir-gecesi':          NIGHT,
+  'pakistan-independence': MOSQUE,
+  'india-independence':    NEWYEAR,
+  'bangladesh-victory':    NEWYEAR,
 }
 
 export default function TemplateCard({ template }: Props) {

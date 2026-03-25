@@ -138,14 +138,6 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.stroke()
     ctx.globalAlpha = 1
 
-    // "With warm wishes from"
-    ctx.font = '34px Arial'
-    ctx.fillStyle = config.textColor
-    ctx.globalAlpha = 0.7
-    ctx.textAlign = 'center'
-    ctx.fillText('With warm wishes from', 540, 710)
-    ctx.globalAlpha = 1
-
     // Name
     const nameFontSize = Math.min(config.nameSize, calcNameFontSize(config.name))
     ctx.font = `bold ${nameFontSize}px Arial`
@@ -153,7 +145,7 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.textAlign = 'center'
     ctx.shadowColor = 'rgba(0,0,0,0.6)'
     ctx.shadowBlur = 15
-    ctx.fillText(config.name || 'Your Name', 540, 820)
+    ctx.fillText(config.name || 'Your Name', 540, 780)
     ctx.shadowBlur = 0
 
     // Urdu
@@ -196,14 +188,6 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.stroke()
     ctx.globalAlpha = 1
 
-    // "With warm wishes from"
-    ctx.font = '36px Arial'
-    ctx.fillStyle = config.textColor
-    ctx.globalAlpha = 0.7
-    ctx.textAlign = 'center'
-    ctx.fillText('With warm wishes from', 540, 620)
-    ctx.globalAlpha = 1
-
     // Name
     const nameFontSize = Math.min(config.nameSize, calcNameFontSize(config.name))
     ctx.font = `bold ${nameFontSize}px Arial`
@@ -211,7 +195,7 @@ export async function generateCardCanvas(config: CardConfig): Promise<HTMLCanvas
     ctx.textAlign = 'center'
     ctx.shadowColor = 'rgba(0,0,0,0.6)'
     ctx.shadowBlur = 15
-    ctx.fillText(config.name || 'Your Name', 540, 730)
+    ctx.fillText(config.name || 'Your Name', 540, 700)
     ctx.shadowBlur = 0
 
     // Urdu

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Template } from '@/data/templates'
 import { useState } from 'react'
+import { useLocale } from '@/context/LocaleContext'
 
 interface Props {
   template: Template
@@ -83,6 +84,7 @@ const PHOTOS: Record<string, string> = {
 export default function TemplateCard({ template }: Props) {
   const [loaded, setLoaded] = useState(false)
   const [error, setError] = useState(false)
+  const { t } = useLocale()
   const photoUrl = PHOTOS[template.id]
 
   return (
@@ -134,7 +136,7 @@ export default function TemplateCard({ template }: Props) {
           {/* Hover CTA */}
           <div className="absolute inset-0 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
             <span className="bg-white text-gray-900 font-bold px-5 py-2 rounded-full text-sm shadow-2xl">
-              + İsim Ekle
+              {t('add_name')}
             </span>
           </div>
         </div>

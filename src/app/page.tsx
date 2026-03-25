@@ -5,29 +5,32 @@ import Link from 'next/link'
 import { templates, Category } from '@/data/templates'
 import TemplateCard from '@/components/TemplateCard'
 import CategoryFilter from '@/components/CategoryFilter'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { getUpcoming, daysUntil } from '@/data/upcomingHolidays'
+import { useLocale } from '@/context/LocaleContext'
 
 export default function Home() {
+  const { t } = useLocale()
   const [activeCategory, setActiveCategory] = useState<Category>('all')
   const [search, setSearch] = useState('')
   const upcoming = useMemo(() => getUpcoming(90), [])
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: templates.length }
-    templates.forEach((t) => {
-      c[t.category] = (c[t.category] ?? 0) + 1
+    templates.forEach((tmpl) => {
+      c[tmpl.category] = (c[tmpl.category] ?? 0) + 1
     })
     return c
   }, [])
 
   const filtered = useMemo(() => {
-    return templates.filter((t) => {
-      const matchCat = activeCategory === 'all' || t.category === activeCategory
+    return templates.filter((tmpl) => {
+      const matchCat = activeCategory === 'all' || tmpl.category === activeCategory
       const matchSearch =
         !search ||
-        t.title.toLowerCase().includes(search.toLowerCase()) ||
-        t.occasion.toLowerCase().includes(search.toLowerCase()) ||
-        t.english.toLowerCase().includes(search.toLowerCase())
+        tmpl.title.toLowerCase().includes(search.toLowerCase()) ||
+        tmpl.occasion.toLowerCase().includes(search.toLowerCase()) ||
+        tmpl.english.toLowerCase().includes(search.toLowerCase())
       return matchCat && matchSearch
     })
   }, [activeCategory, search])
@@ -48,31 +51,27 @@ export default function Home() {
           </div>
 
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-2 leading-tight">
-            Personalized
+            {t('hero_title1')}
             <br />
             <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-              Greeting Cards
+              {t('hero_title2')}
             </span>
           </h1>
 
           <p className="text-gray-400 text-sm md:text-lg max-w-xl mx-auto mb-4">
-            Add your name to beautiful cards. Download &amp; share on WhatsApp!
+            {t('hero_sub')}
           </p>
 
-          {/* Language badges */}
-          <div className="flex justify-center gap-2 mb-5 flex-wrap">
-            {['English', 'اردو', 'العربية', 'हिन्दी'].map((lang) => (
-              <span key={lang} className="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-xs border border-gray-700">
-                {lang}
-              </span>
-            ))}
+          {/* Language switcher */}
+          <div className="mb-4">
+            <LanguageSwitcher />
           </div>
 
-          {/* Davetiye shortcut */}
+          {/* Invitation shortcut */}
           <div className="mb-4">
             <Link href="/invite"
               className="inline-flex items-center gap-2 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/40 text-rose-400 hover:text-rose-300 rounded-full px-5 py-2 text-sm font-medium transition-all">
-              💌 Davetiye Oluştur →
+              {t('create_invite')}
             </Link>
           </div>
 
@@ -81,7 +80,7 @@ export default function Home() {
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">🔍</span>
             <input
               type="text"
-              placeholder="Eid, Christmas, Ramadan..."
+              placeholder={t('search_ph')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-gray-800 border border-gray-700 rounded-full pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 text-sm"
@@ -104,7 +103,7 @@ export default function Home() {
         {/* Upcoming Holidays */}
         {upcoming.length > 0 && (
           <div className="mb-5">
-            <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">⏰ Yaklaşan Bayramlar</p>
+            <p className="text-gray-500 text-xs font-medium uppercase tracking-wide mb-2">{t('upcoming')}</p>
             <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
               {upcoming.map((h) => {
                 const d = daysUntil(h.date)
@@ -115,7 +114,9 @@ export default function Home() {
                     <span className="text-lg">{h.emoji}</span>
                     <div>
                       <p className="text-white text-xs font-medium whitespace-nowrap">{h.title}</p>
-                      <p className="text-amber-400 text-xs">{d === 0 ? 'Bugün!' : d === 1 ? 'Yarın!' : `${d} gün`}</p>
+                      <p className="text-amber-400 text-xs">
+                        {d === 0 ? t('today') : d === 1 ? t('tomorrow') : t('days_left', { n: d })}
+                      </p>
                     </div>
                   </Link>
                 )
@@ -126,11 +127,11 @@ export default function Home() {
 
         {/* Results count */}
         <p className="text-gray-500 text-xs mb-3">
-          {filtered.length} template{filtered.length !== 1 ? 's' : ''} found
-          {search && <span> for &quot;<span className="text-amber-400">{search}</span>&quot;</span>}
+          {t('found', { n: filtered.length })}
+          {search && <span> {t('found_for')} &quot;<span className="text-amber-400">{search}</span>&quot;</span>}
         </p>
 
-        {/* Grid — 2 cols on mobile, 3 on sm, 4 on lg */}
+        {/* Grid */}
         {filtered.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {filtered.map((template) => (
@@ -140,14 +141,14 @@ export default function Home() {
         ) : (
           <div className="text-center py-20">
             <p className="text-5xl mb-4">🔍</p>
-            <p className="text-gray-400">No templates found.</p>
+            <p className="text-gray-400">{t('no_results')}</p>
           </div>
         )}
       </div>
 
       {/* Footer */}
       <footer className="fixed bottom-0 inset-x-0 border-t border-gray-800 bg-gray-950/90 backdrop-blur py-3 text-center text-gray-600 text-xs">
-        Greetify — Islamic · Christian · National 🌍
+        Greetify — {t('footer')}
       </footer>
     </main>
   )

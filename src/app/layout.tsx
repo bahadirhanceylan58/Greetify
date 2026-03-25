@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import { LocaleProvider } from '@/context/LocaleContext'
 
 export const metadata: Metadata = {
   title: 'Greetify — Islamic, Christian & National Greeting Cards',
@@ -44,7 +45,9 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body>
-        {children}
+        <LocaleProvider>
+          {children}
+        </LocaleProvider>
         <script dangerouslySetInnerHTML={{
           __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js')`
         }} />

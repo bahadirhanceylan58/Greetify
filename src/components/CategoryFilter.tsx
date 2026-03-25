@@ -1,6 +1,7 @@
 'use client'
 
 import { categories, Category } from '@/data/templates'
+import { useLocale } from '@/context/LocaleContext'
 import clsx from 'clsx'
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export default function CategoryFilter({ active, onChange, counts }: Props) {
+  const { t } = useLocale()
+
   return (
     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
       {categories.map((cat) => (
@@ -24,7 +27,7 @@ export default function CategoryFilter({ active, onChange, counts }: Props) {
           )}
         >
           <span>{cat.emoji}</span>
-          <span>{cat.label}</span>
+          <span>{t(`cat_${cat.id}`)}</span>
           <span className={clsx(
             'text-xs px-1.5 py-0.5 rounded-full',
             active === cat.id ? 'bg-amber-600/50 text-amber-100' : 'bg-gray-700 text-gray-400'
